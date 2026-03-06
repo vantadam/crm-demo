@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM — Messaging</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg: #0a0a0f; --surface: #111118; --surface2: #16161f; --border: #1e1e2e; --accent: #e8ff47; --text: #f0f0f5; --muted: #6b6b80; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 60px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+  .brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
+  .brand span { color: var(--accent); }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  .nav-links a.active { color: var(--text); border-bottom: 2px solid var(--accent); padding-bottom: 2px; }
+  .logout-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 7px 16px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; transition: all 0.2s; }
+  .logout-btn:hover { border-color: var(--muted); color: var(--text); }
+  main { padding: 40px; max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .panel { background: var(--surface); border: 1px solid var(--border); padding: 32px; }
+  .panel-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .tabs { display: flex; gap: 0; margin-bottom: 24px; border: 1px solid var(--border); }
+  .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted); border: none; background: none; color: var(--muted); transition: all 0.2s; }
+  .tab.active { background: var(--accent); color: #0a0a0f; font-weight: 600; }
+  label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  input, select, textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; margin-bottom: 20px; }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  textarea { height: 120px; resize: vertical; }
+  select option { background: var(--surface2); }
+  .btn { padding: 12px 24px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; }
+  .btn-primary { background: var(--accent); color: #0a0a0f; width: 100%; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.5px; }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .client-list { max-height: 400px; overflow-y: auto; }
+  .client-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+  .client-item:hover { background: var(--surface2); }
+  .client-item input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0; }
+  .client-info { flex: 1; }
+  .client-name { font-size: 14px; font-weight: 500; }
+  .client-phone { font-size: 12px; color: var(--muted); }
+  .tag { display: inline-block; background: rgba(232,255,71,0.1); color: var(--accent); border: 1px solid rgba(232,255,71,0.2); font-size: 10px; padding: 2px 8px; margin-left: 6px; }
+  .filter-row { display: flex; gap: 10px; margin-bottom: 16px; }
+  .filter-row input { margin: 0; flex: 1; }
+  .filter-row select { margin: 0; }
+  .select-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; margin-bottom: 12px; font-size: 13px; color: var(--muted); }
+  .select-bar button { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; }
+  .char-count { text-align: right; font-size: 12px; color: var(--muted); margin-top: -16px; margin-bottom: 16px; }
+  .log-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .log-table th { text-align: left; padding: 10px 12px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .log-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .status-sent { color: #4ade80; }
+  .status-failed { color: #ff6b6b; }
+  .toast { position: fixed; bottom: 32px; right: 32px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 16px 24px; font-size: 14px; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .sending-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; place-items: center; }
+  .sending-overlay.active { display: grid; }
+  .sending-box { background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--accent); padding: 48px; text-align: center; }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .full-width { grid-column: 1 / -1; }
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">CLIENT<span>HUB</span></div>
+  <div class="nav-links">
+    <a href="/clients.html">Clients</a>
+    <a href="/sms.html" class="active">Messaging</a>
+  </div>
+  <button class="logout-btn" onclick="logout()">Sign Out</button>
+</nav>
+<main>
+  <!-- Left: Compose -->
+  <div class="panel">
+    <div class="panel-title">Compose Message</div>
+    <div class="tabs">
+      <button class="tab active" id="tab-sms" onclick="switchTab('sms')">📱 SMS</button>
+      <button class="tab" id="tab-email" onclick="switchTab('email')">📧 Email</button>
+    </div>
+    
+    <div id="sms-form">
+      <label>Message</label>
+      <textarea id="sms-msg" placeholder="Type your message..." oninput="updateChar()"></textarea>
+      <div class="char-count"><span id="char-count">0</span> / 160 chars</div>
+      <button class="btn btn-primary" id="send-btn" onclick="sendMessage()">Send SMS to Selected</button>
+    </div>
+
+    <div id="email-form" style="display:none">
+      <label>Subject</label>
+      <input type="text" id="email-subject" placeholder="Email subject">
+      <label>Message</label>
+      <textarea id="email-body" placeholder="Email body..." style="height:160px"></textarea>
+      <button class="btn btn-primary" onclick="sendMessage()">Send Email to Selected</button>
+    </div>
+  </div>
+
+  <!-- Right: Client Selector -->
+  <div class="panel">
+    <div class="panel-title">Select Recipients</div>
+    <div class="filter-row">
+      <input type="text" id="r-search" placeholder="Search..." oninput="renderRecipients()">
+      <select id="r-cat" onchange="renderRecipients()">
+        <option value="">All Categories</option>
+      </select>
+    </div>
+    <div class="select-bar">
+      <span><strong id="sel-count">0</strong> selected</span>
+      <div style="display:flex;gap:12px">
+        <button onclick="selectAllVisible()">Select All</button>
+        <button onclick="clearAll()">Clear</button>
+      </div>
+    </div>
+    <div class="client-list" id="recipient-list"></div>
+  </div>
+
+  <!-- Logs -->
+  <div class="panel full-width">
+    <div class="panel-title">SMS Log</div>
+    <table class="log-table">
+      <thead><tr><th>Client</th><th>Phone</th><th>Message</th><th>Status</th><th>Sent At</th></tr></thead>
+      <tbody id="log-tbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<div class="sending-overlay" id="sending-overlay">
+  <div class="sending-box">
+    <div class="spinner"></div>
+    <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700">Sending...</div>
+    <div style="color:var(--muted);font-size:13px;margin-top:8px" id="send-progress"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let clients = [], categories = [], selected = new Set(), currentTab = 'sms';
+
+async function load() {
+  const [cr, cats, logs] = await Promise.all([
+    fetch('/api/clients').then(r=>r.json()),
+    fetch('/api/clients/categories').then(r=>r.json()),
+    fetch('/api/sms/logs').then(r=>r.json())
+  ]);
+  clients = cr; categories = cats;
+  
+  // Pre-select from clients page
+  const pre = sessionStorage.getItem('selectedIds');
+  if (pre) { JSON.parse(pre).forEach(id => selected.add(id)); sessionStorage.removeItem('selectedIds'); }
+
+  // Pre-set tab from URL
+  const mode = new URLSearchParams(location.search).get('mode');
+  if (mode) switchTab(mode);
+
+  renderCats(); renderRecipients(); renderLogs(logs); updateSelCount();
+}
+
+function renderCats() {
+  const s = document.getElementById('r-cat');
+  s.innerHTML = '<option value="">All Categories</option>' + categories.map(c=>`<option>${c.name}</option>`).join('');
+}
+
+function renderRecipients() {
+  const search = document.getElementById('r-search').value.toLowerCase();
+  const cat = document.getElementById('r-cat').value;
+  const filtered = clients.filter(c => {
+    const ms = !search || c.name.toLowerCase().includes(search) || (c.phone||'').includes(search);
+    const mc = !cat || (c.categories||[]).includes(cat);
+    return ms && mc;
+  });
+  document.getElementById('recipient-list').innerHTML = filtered.map(c => `
+    <div class="client-item" onclick="toggleClient(${c.id})">
+      <input type="checkbox" ${selected.has(c.id)?'checked':''} onclick="event.stopPropagation();toggleClient(${c.id})">
+      <div class="client-info">
+        <div class="client-name">${c.name} ${(c.categories||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <div class="client-phone">${c.phone||'No phone'} ${c.email?'· '+c.email:''}</div>
+      </div>
+    </div>
+  `).join('') || '<div style="padding:24px;text-align:center;color:var(--muted)">No clients found</div>';
+}
+
+function toggleClient(id) {
+  if (selected.has(id)) selected.delete(id); else selected.add(id);
+  renderRecipients(); updateSelCount();
+}
+
+function selectAllVisible() {
+  const search = document.getElementById('r-search').value.toLowerCase();
+  const cat = document.getElementById('r-cat').value;
+  clients.filter(c => {
+    const ms = !search || c.name.toLowerCase().includes(search);
+    const mc = !cat || (c.categories||[]).includes(cat);
+    return ms && mc;
+  }).forEach(c => selected.add(c.id));
+  renderRecipients(); updateSelCount();
+}
+
+function clearAll() { selected.clear(); renderRecipients(); updateSelCount(); }
+function updateSelCount() { document.getElementById('sel-count').textContent = selected.size; }
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-sms').className = tab === 'sms' ? 'tab active' : 'tab';
+  document.getElementById('tab-email').className = tab === 'email' ? 'tab active' : 'tab';
+  document.getElementById('sms-form').style.display = tab === 'sms' ? 'block' : 'none';
+  document.getElementById('email-form').style.display = tab === 'email' ? 'block' : 'none';
+}
+
+function updateChar() {
+  const len = document.getElementById('sms-msg').value.length;
+  document.getElementById('char-count').textContent = len;
+}
+
+async function sendMessage() {
+  if (!selected.size) return showToast('Select at least one recipient');
+  const ids = [...selected];
+
+  if (currentTab === 'sms') {
+    const message = document.getElementById('sms-msg').value.trim();
+    if (!message) return showToast('Enter a message');
+    showSending(`Sending to ${ids.length} recipients...`);
+    const res = await fetch('/api/sms/send', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientIds: ids, message })
+    });
+    const data = await res.json();
+    hideSending();
+    const sent = data.results?.filter(r=>r.status==='sent').length || 0;
+    showToast(`SMS sent: ${sent}/${ids.length} successful`);
+    load();
+  } else {
+    const subject = document.getElementById('email-subject').value.trim();
+    const body = document.getElementById('email-body').value.trim();
+    if (!subject || !body) return showToast('Enter subject and message');
+    showSending(`Sending emails to ${ids.length} recipients...`);
+    const res = await fetch('/api/sms/email', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientIds: ids, subject, body })
+    });
+    const data = await res.json();
+    hideSending();
+    const sent = data.results?.filter(r=>r.status==='sent').length || 0;
+    showToast(`Email sent: ${sent}/${ids.length} successful`);
+  }
+}
+
+function renderLogs(logs) {
+  document.getElementById('log-tbody').innerHTML = logs.map(l => `
+    <tr>
+      <td><strong>${l.client_name}</strong></td>
+      <td style="color:var(--muted)">${l.phone||'—'}</td>
+      <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.message}</td>
+      <td class="status-${l.status}">${l.status}</td>
+      <td style="color:var(--muted);font-size:12px">${new Date(l.sent_at).toLocaleString()}</td>
+    </tr>
+  `).join('') || '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted)">No messages sent yet</td></tr>';
+}
+
+function showSending(msg) {
+  document.getElementById('send-progress').textContent = msg;
+  document.getElementById('sending-overlay').classList.add('active');
+}
+function hideSending() { document.getElementById('sending-overlay').classList.remove('active'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function logout() {
+  await fetch('/api/auth/logout', { method: 'POST' });
+  window.location.href = '/login.html';
+}
+
+load();
+</script>
+</body>
+</html>

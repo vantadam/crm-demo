@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM — Clients</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0f; --surface: #111118; --surface2: #16161f;
+    --border: #1e1e2e; --accent: #e8ff47; --text: #f0f0f5; --muted: #6b6b80;
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 60px;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
+  .brand span { color: var(--accent); }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 14px;
+    font-weight: 500; transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); }
+  .nav-links a.active { border-bottom: 2px solid var(--accent); padding-bottom: 2px; }
+  .logout-btn {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    padding: 7px 16px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; transition: all 0.2s;
+  }
+  .logout-btn:hover { border-color: var(--muted); color: var(--text); }
+  main { padding: 40px; max-width: 1400px; margin: 0 auto; }
+  .page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 32px; }
+  h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 36px; letter-spacing: -1px; }
+  h1 span { color: var(--accent); }
+  .actions { display: flex; gap: 12px; align-items: center; }
+  .btn {
+    padding: 11px 22px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+    font-weight: 500; cursor: pointer; border: none; transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--accent); color: #0a0a0f; }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--muted); }
+  .btn-danger { background: transparent; color: #ff6b6b; border: 1px solid #ff6b6b33; font-size: 12px; padding: 6px 12px; }
+  .btn-danger:hover { background: #ff6b6b15; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 24px; position: relative; overflow: hidden;
+  }
+  .stat::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; background: var(--accent); transform: scaleX(0);
+    transition: transform 0.3s; transform-origin: left;
+  }
+  .stat:hover::after { transform: scaleX(1); }
+  .stat-number { font-family: 'Syne', sans-serif; font-size: 42px; font-weight: 800; line-height: 1; }
+  .stat-label { color: var(--muted); font-size: 12px; margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; }
+  .filter-bar {
+    display: flex; gap: 12px; margin-bottom: 20px; align-items: center;
+  }
+  input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+    background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    padding: 11px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px;
+    outline: none; transition: border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  .search-input { flex: 1; }
+  select { color: var(--text); }
+  select option { background: var(--surface2); }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left; padding: 12px 16px; font-size: 11px;
+    font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted); border-bottom: 1px solid var(--border);
+  }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: var(--surface); }
+  tbody td { padding: 14px 16px; font-size: 14px; }
+  .tag {
+    display: inline-block; background: rgba(232,255,71,0.1); color: var(--accent);
+    border: 1px solid rgba(232,255,71,0.2); font-size: 11px; padding: 3px 10px;
+    margin: 2px; white-space: nowrap;
+  }
+  .checkbox-col { width: 40px; }
+  input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    z-index: 1000; place-items: center;
+  }
+  .modal-overlay.open { display: grid; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 40px; width: 100%; max-width: 500px; position: relative;
+  }
+  .modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); }
+  .modal h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px; margin-bottom: 28px; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .form-group input, .form-group select { width: 100%; }
+  .modal-actions { display: flex; gap: 12px; margin-top: 28px; }
+  .tag-input-wrap { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; background: var(--bg); border: 1px solid var(--border); min-height: 44px; }
+  .tag-input-wrap .tag { cursor: pointer; }
+  .tag-input-wrap .tag:hover { background: rgba(255,107,107,0.1); color: #ff6b6b; border-color: #ff6b6b33; }
+  .tag-input-inner { border: none; outline: none; background: transparent; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; min-width: 80px; flex: 1; }
+  #file-upload-area {
+    border: 1px dashed var(--border); padding: 32px; text-align: center;
+    cursor: pointer; transition: border-color 0.2s;
+  }
+  #file-upload-area:hover { border-color: var(--accent); }
+  #file-upload-area p { color: var(--muted); font-size: 14px; }
+  #file-upload-area strong { color: var(--accent); }
+  .toast {
+    position: fixed; bottom: 32px; right: 32px; background: var(--surface);
+    border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    padding: 16px 24px; font-size: 14px; z-index: 9999;
+    transform: translateY(80px); opacity: 0; transition: all 0.3s;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .empty-state { text-align: center; padding: 80px 20px; color: var(--muted); }
+  .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 22px; margin-bottom: 8px; color: var(--text); }
+  .bulk-bar {
+    display: none; align-items: center; gap: 16px; padding: 12px 20px;
+    background: var(--surface2); border: 1px solid var(--accent); margin-bottom: 12px;
+  }
+  .bulk-bar.visible { display: flex; }
+  .bulk-bar span { color: var(--accent); font-weight: 500; font-size: 14px; }
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">CLIENT<span>HUB</span></div>
+  <div class="nav-links">
+    <a href="/clients.html" class="active">Clients</a>
+    <a href="/sms.html">Messaging</a>
+  </div>
+  <button class="logout-btn" onclick="logout()">Sign Out</button>
+</nav>
+<main>
+  <div class="page-header">
+    <h1>Clients <span id="total-count"></span></h1>
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="openModal('importModal')">Import CSV</button>
+      <button class="btn btn-primary" onclick="openModal('addModal')">+ Add Client</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-number" id="stat-total">—</div>
+      <div class="stat-label">Total Clients</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number" id="stat-cats">—</div>
+      <div class="stat-label">Categories</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number" id="stat-phone">—</div>
+      <div class="stat-label">With Phone</div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <input type="text" class="search-input" id="search" placeholder="Search clients..." oninput="renderTable()">
+    <select id="cat-filter" onchange="renderTable()">
+      <option value="">All Categories</option>
+    </select>
+    <button class="btn btn-secondary" onclick="selectAll()">Select All</button>
+  </div>
+
+  <div class="bulk-bar" id="bulk-bar">
+    <span id="selected-count">0 selected</span>
+    <button class="btn btn-primary" onclick="bulkSMS()">Send SMS</button>
+    <button class="btn btn-secondary" onclick="bulkEmail()">Send Email</button>
+    <button class="btn btn-danger" onclick="clearSelection()">Clear</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="checkbox-col"></th>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Categories</th>
+        <th>Added</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="client-table"></tbody>
+  </table>
+  <div class="empty-state" id="empty-state" style="display:none">
+    <h3>No clients yet</h3>
+    <p>Add your first client or import a CSV file</p>
+  </div>
+</main>
+
+<!-- Add Client Modal -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <h2>Add Client</h2>
+    <div class="form-group"><label>Full Name</label><input type="text" id="add-name" placeholder="John Doe"></div>
+    <div class="form-group"><label>Phone Number</label><input type="tel" id="add-phone" placeholder="+1234567890"></div>
+    <div class="form-group"><label>Email</label><input type="email" id="add-email" placeholder="john@example.com"></div>
+    <div class="form-group">
+      <label>Categories <span style="color:var(--muted);font-size:10px">(press Enter to add)</span></label>
+      <div class="tag-input-wrap" id="add-cats-wrap">
+        <input class="tag-input-inner" id="add-cat-input" placeholder="e.g. VIP" onkeydown="handleTagInput(event)">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="addClient()">Save Client</button>
+      <button class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import CSV Modal -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <h2>Import CSV</h2>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:24px">CSV must have columns: <strong style="color:var(--text)">name, phone, email</strong></p>
+    <div id="file-upload-area" onclick="document.getElementById('csv-file').click()">
+      <input type="file" id="csv-file" accept=".csv" style="display:none" onchange="updateFileName()">
+      <p><strong>Click to select CSV file</strong></p>
+      <p id="file-name" style="margin-top:8px;font-size:12px"></p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="importCSV()">Import</button>
+      <button class="btn btn-secondary" onclick="closeModal('importModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let clients = [], categories = [], selectedIds = new Set(), addTags = [];
+
+async function load() {
+  const [cr, cats] = await Promise.all([
+    fetch('/api/clients').then(r=>r.json()),
+    fetch('/api/clients/categories').then(r=>r.json())
+  ]);
+  clients = cr; categories = cats;
+  updateStats(); renderTable(); renderCatFilter();
+}
+
+function updateStats() {
+  document.getElementById('stat-total').textContent = clients.length;
+  document.getElementById('stat-cats').textContent = categories.length;
+  document.getElementById('stat-phone').textContent = clients.filter(c=>c.phone).length;
+  document.getElementById('total-count').textContent = clients.length ? `(${clients.length})` : '';
+}
+
+function renderCatFilter() {
+  const sel = document.getElementById('cat-filter');
+  const val = sel.value;
+  sel.innerHTML = '<option value="">All Categories</option>' +
+    categories.map(c=>`<option value="${c.name}">${c.name}</option>`).join('');
+  sel.value = val;
+}
+
+function renderTable() {
+  const search = document.getElementById('search').value.toLowerCase();
+  const cat = document.getElementById('cat-filter').value;
+  let filtered = clients.filter(c => {
+    const matchSearch = !search || c.name.toLowerCase().includes(search) || (c.phone||'').includes(search) || (c.email||'').toLowerCase().includes(search);
+    const matchCat = !cat || (c.categories && c.categories.includes(cat));
+    return matchSearch && matchCat;
+  });
+  const tbody = document.getElementById('client-table');
+  document.getElementById('empty-state').style.display = filtered.length ? 'none' : 'block';
+  tbody.innerHTML = filtered.map(c => `
+    <tr>
+      <td><input type="checkbox" ${selectedIds.has(c.id)?'checked':''} onchange="toggleSelect(${c.id}, this.checked)"></td>
+      <td><strong>${c.name}</strong></td>
+      <td style="color:var(--muted)">${c.phone||'—'}</td>
+      <td style="color:var(--muted);font-size:13px">${c.email||'—'}</td>
+      <td>${(c.categories||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</td>
+      <td style="color:var(--muted);font-size:12px">${new Date(c.created_at).toLocaleDateString()}</td>
+      <td><button class="btn btn-danger" onclick="deleteClient(${c.id})">Delete</button></td>
+    </tr>
+  `).join('');
+}
+
+function toggleSelect(id, checked) {
+  if (checked) selectedIds.add(id); else selectedIds.delete(id);
+  updateBulkBar();
+}
+
+function selectAll() {
+  clients.forEach(c => selectedIds.add(c.id));
+  renderTable(); updateBulkBar();
+}
+
+function clearSelection() {
+  selectedIds.clear(); renderTable(); updateBulkBar();
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulk-bar');
+  const count = selectedIds.size;
+  bar.className = count > 0 ? 'bulk-bar visible' : 'bulk-bar';
+  document.getElementById('selected-count').textContent = `${count} selected`;
+}
+
+function bulkSMS() {
+  sessionStorage.setItem('selectedIds', JSON.stringify([...selectedIds]));
+  window.location.href = '/sms.html?mode=sms';
+}
+
+function bulkEmail() {
+  sessionStorage.setItem('selectedIds', JSON.stringify([...selectedIds]));
+  window.location.href = '/sms.html?mode=email';
+}
+
+// Tag input
+function handleTagInput(e) {
+  if (e.key === 'Enter') {
+    const val = e.target.value.trim();
+    if (val && !addTags.includes(val)) {
+      addTags.push(val);
+      renderTags();
+    }
+    e.target.value = '';
+    e.preventDefault();
+  }
+}
+
+function renderTags() {
+  const wrap = document.getElementById('add-cats-wrap');
+  const input = document.getElementById('add-cat-input');
+  wrap.innerHTML = '';
+  addTags.forEach((t, i) => {
+    const tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.textContent = t;
+    tag.title = 'Click to remove';
+    tag.onclick = () => { addTags.splice(i, 1); renderTags(); };
+    wrap.appendChild(tag);
+  });
+  wrap.appendChild(input);
+  input.focus();
+}
+
+async function addClient() {
+  const name = document.getElementById('add-name').value.trim();
+  if (!name) return showToast('Name is required');
+  const res = await fetch('/api/clients', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name, phone: document.getElementById('add-phone').value,
+      email: document.getElementById('add-email').value,
+      categories: addTags
+    })
+  });
+  if (res.ok) {
+    closeModal('addModal'); addTags = []; renderTags();
+    document.getElementById('add-name').value = '';
+    document.getElementById('add-phone').value = '';
+    document.getElementById('add-email').value = '';
+    await load(); showToast('Client added successfully');
+  }
+}
+
+async function deleteClient(id) {
+  if (!confirm('Delete this client?')) return;
+  await fetch(`/api/clients/${id}`, { method: 'DELETE' });
+  await load(); showToast('Client deleted');
+}
+
+function updateFileName() {
+  const f = document.getElementById('csv-file').files[0];
+  document.getElementById('file-name').textContent = f ? f.name : '';
+}
+
+async function importCSV() {
+  const file = document.getElementById('csv-file').files[0];
+  if (!file) return showToast('Select a CSV file');
+  const fd = new FormData(); fd.append('file', file);
+  const res = await fetch('/api/clients/import', { method: 'POST', body: fd });
+  const data = await res.json();
+  closeModal('importModal');
+  await load(); showToast(`Imported ${data.imported} clients`);
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function logout() {
+  await fetch('/api/auth/logout', { method: 'POST' });
+  window.location.href = '/login.html';
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+});
+
+load();
+</script>
+</body>
+</html>

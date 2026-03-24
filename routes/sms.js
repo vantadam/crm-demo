@@ -1,74 +1,80 @@
 const router = require('express').Router();
-const axios = require('axios');
 const nodemailer = require('nodemailer');
 const pool = require('../db');
 const auth = require('../middleware/auth');
 
-// Yeastar API token helper
-async function getYeastarToken() {
-  const { data } = await axios.post(`http://${process.env.YEASTAR_HOST}:${process.env.YEASTAR_PORT}/api/v2.0.0/user/login`, {
-    username: process.env.YEASTAR_USER,
-    password: process.env.YEASTAR_PASS
+function createTransporter() {
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT),
+    secure: process.env.SMTP_PORT === '465',
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    tls: { rejectUnauthorized: false }
   });
-  return data.token;
 }
 
-// Send SMS via Yeastar TG200
+// Send SMS via email-to-SMS gateway
 router.post('/send', auth, async (req, res) => {
   const { clientIds, message } = req.body;
   const results = [];
+  const transporter = createTransporter();
 
-  try {
-    const token = await getYeastarToken();
-    
-    for (const clientId of clientIds) {
-      const client = await pool.query('SELECT * FROM clients WHERE id=$1', [clientId]);
-      const phone = client.rows[0]?.phone;
-      if (!phone) continue;
+  for (const clientId of clientIds) {
+    const result = await pool.query('SELECT * FROM clients WHERE id=$1', [clientId]);
+    const c = result.rows[0];
 
-      try {
-        await axios.post(`http://${process.env.YEASTAR_HOST}:${process.env.YEASTAR_PORT}/api/v2.0.0/sms/send`, {
-          token,
-          trunk: 1,      // TG200 port 1
-          to: phone,
-          message
-        });
-
-        await pool.query(
-          'INSERT INTO sms_logs (client_id, message, status) VALUES ($1,$2,$3)',
-          [clientId, message, 'sent']
-        );
-        results.push({ clientId, status: 'sent' });
-      } catch (e) {
-        await pool.query(
-          'INSERT INTO sms_logs (client_id, message, status) VALUES ($1,$2,$3)',
-          [clientId, message, 'failed']
-        );
-        results.push({ clientId, status: 'failed', error: e.message });
-      }
+    if (!c?.phone) {
+      results.push({ clientId, status: 'skipped', reason: 'no phone' });
+      continue;
     }
-    res.json({ results });
-  } catch (e) {
-    res.status(500).json({ error: 'Yeastar connection failed: ' + e.message });
+
+    try {
+      await transporter.sendMail({
+        from: `"fmevenement.ca" <${process.env.SMTP_USER}>`,
+        to: process.env.SMS_GATEWAY,
+        subject: c.phone,
+        text: message
+      });
+
+      await pool.query(
+        'INSERT INTO sms_logs (client_id, message, status) VALUES ($1,$2,$3)',
+        [clientId, message, 'sent']
+      );
+      results.push({ clientId, status: 'sent' });
+    } catch (e) {
+      await pool.query(
+        'INSERT INTO sms_logs (client_id, message, status) VALUES ($1,$2,$3)',
+        [clientId, message, 'failed']
+      );
+      results.push({ clientId, status: 'failed', error: e.message });
+    }
   }
+  res.json({ results });
 });
 
-// Send Email
+// Send Email directly to clients
 router.post('/email', auth, async (req, res) => {
   const { clientIds, subject, body } = req.body;
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-  });
-
   const results = [];
+  const transporter = createTransporter();
+
   for (const clientId of clientIds) {
-    const client = await pool.query('SELECT * FROM clients WHERE id=$1', [clientId]);
-    const email = client.rows[0]?.email;
-    if (!email) continue;
+    const result = await pool.query('SELECT * FROM clients WHERE id=$1', [clientId]);
+    const c = result.rows[0];
+
+    if (!c?.email) {
+      results.push({ clientId, status: 'skipped', reason: 'no email' });
+      continue;
+    }
+
     try {
-      await transporter.sendMail({ from: process.env.SMTP_USER, to: email, subject, text: body });
+      await transporter.sendMail({
+        from: `"fmevenement.ca" <${process.env.SMTP_USER}>`,
+        to: c.email,
+        subject,
+        text: body,
+        html: `<p>${body.replace(/\n/g, '<br>')}</p>`
+      });
       results.push({ clientId, status: 'sent' });
     } catch (e) {
       results.push({ clientId, status: 'failed', error: e.message });

@@ -27,8 +27,10 @@ app.get('/sms.html',              auth, (req, res) => res.sendFile(path.join(__d
 app.get('/campaigns.html',        auth, (req, res) => res.sendFile(path.join(__dirname, 'public/campaigns.html')));
 app.get('/campaign-status.html',  auth, (req, res) => res.sendFile(path.join(__dirname, 'public/campaign-status.html')));
 
-app.listen(process.env.PORT, () => {
-  console.log(`CRM running on http://localhost:${process.env.PORT}`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`CRM running on http://localhost:${PORT}`);
+  console.log(`Network access: http://192.168.1.32:${PORT}`);
 
   // Start background email worker
   const { startWorker } = require('./worker/emailWorker');

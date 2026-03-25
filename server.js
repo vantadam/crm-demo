@@ -5,7 +5,7 @@ const path    = require('path');
 
 const app = express();
 
-app.use(express.json({ limit: '10mb' })); // html bodies can be large
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -20,19 +20,19 @@ app.use('/api/clients',   require('./routes/clients'));
 app.use('/api/sms',       require('./routes/sms'));
 app.use('/api/campaigns', require('./routes/campaigns'));
 
-// Protect HTML pages
 const auth = require('./middleware/auth');
-app.get('/clients.html',          auth, (req, res) => res.sendFile(path.join(__dirname, 'public/clients.html')));
-app.get('/sms.html',              auth, (req, res) => res.sendFile(path.join(__dirname, 'public/sms.html')));
-app.get('/campaigns.html',        auth, (req, res) => res.sendFile(path.join(__dirname, 'public/campaigns.html')));
-app.get('/campaign-status.html',  auth, (req, res) => res.sendFile(path.join(__dirname, 'public/campaign-status.html')));
+app.get('/clients.html',         auth, (req, res) => res.sendFile(path.join(__dirname, 'public/clients.html')));
+app.get('/sms.html',             auth, (req, res) => res.sendFile(path.join(__dirname, 'public/sms.html')));
+app.get('/campaigns.html',       auth, (req, res) => res.sendFile(path.join(__dirname, 'public/campaigns.html')));
+app.get('/campaign-status.html', auth, (req, res) => res.sendFile(path.join(__dirname, 'public/campaign-status.html')));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`CRM running on http://localhost:${PORT}`);
   console.log(`Network access: http://192.168.1.32:${PORT}`);
-
-  // Start background email worker
-  const { startWorker } = require('./worker/emailWorker');
+  
+  const { startWorker }       = require('./worker/emailWorker');
+  const { startBouncePoller } = require('./worker/bouncePoller');
   startWorker();
+  startBouncePoller();
 });

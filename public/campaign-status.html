@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,60 +16,104 @@
   .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
   .nav-links a.active { color: var(--text); border-bottom: 2px solid var(--accent); padding-bottom: 2px; }
   .logout-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 7px 16px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; }
-  .logout-btn:hover { border-color: var(--muted); color: var(--text); }
   main { padding: 40px; max-width: 1200px; margin: 0 auto; }
   .page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 32px; }
   h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 36px; letter-spacing: -1px; }
   h1 span { color: var(--accent); }
   .btn { padding: 9px 18px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; }
-  .btn-primary { background: var(--accent); color: #0a0a0f; }
+  .btn-primary  { background: var(--accent); color: #0a0a0f; }
   .btn-primary:hover { opacity: 0.85; }
   .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
   .btn-secondary:hover { border-color: var(--muted); }
   .btn-danger { background: transparent; color: #ff6b6b; border: 1px solid #ff6b6b33; font-size: 12px; padding: 6px 12px; }
   .btn-danger:hover { background: #ff6b6b15; }
-  .campaign-card {
-    background: var(--surface); border: 1px solid var(--border);
-    margin-bottom: 20px; overflow: hidden;
-  }
-  .card-header { padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .btn-ghost { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 12px; font-family: 'DM Sans', sans-serif; padding: 4px 0; }
+
+  /* Campaign card */
+  .campaign-card { background: var(--surface); border: 1px solid var(--border); margin-bottom: 24px; overflow: hidden; }
+  .card-header { padding: 22px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; cursor: pointer; transition: background 0.15s; }
+  .card-header:hover { background: var(--surface2); }
   .card-left { flex: 1; min-width: 0; }
-  .camp-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 4px; }
-  .camp-subject { color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .camp-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; margin-bottom: 3px; display: flex; align-items: center; gap: 10px; }
+  .camp-meta { color: var(--muted); font-size: 12px; }
   .card-right { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
-  .status-badge {
-    padding: 4px 12px; font-size: 11px; font-weight: 600;
-    letter-spacing: 1px; text-transform: uppercase;
-  }
-  .badge-running { background: rgba(232,255,71,0.15); color: var(--accent); border: 1px solid rgba(232,255,71,0.3); }
-  .badge-paused  { background: rgba(107,107,128,0.15); color: var(--muted);  border: 1px solid var(--border); }
-  .badge-done    { background: rgba(74,222,128,0.1);   color: #4ade80;       border: 1px solid rgba(74,222,128,0.2); }
-  .badge-draft   { background: rgba(107,107,128,0.1);  color: var(--muted);  border: 1px solid var(--border); }
-  .progress-section { padding: 0 28px 24px; }
-  .progress-stats { display: flex; gap: 32px; margin-bottom: 14px; font-size: 13px; }
-  .prog-stat { display: flex; flex-direction: column; }
-  .prog-stat span:first-child { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; }
-  .prog-stat span:last-child  { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-  .prog-stat .c-sent   { color: var(--accent); }
-  .prog-stat .c-failed { color: #ff6b6b; }
-  .prog-stat .c-pending{ color: var(--muted); }
-  .progress-bar-wrap { height: 6px; background: var(--surface2); border: 1px solid var(--border); }
+  .chevron { font-size: 16px; color: var(--muted); transition: transform 0.2s; }
+  .chevron.open { transform: rotate(180deg); }
+
+  /* Status badges */
+  .badge { padding: 3px 10px; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .badge-running  { background: rgba(232,255,71,0.12); color: var(--accent); border: 1px solid rgba(232,255,71,0.25); }
+  .badge-paused   { background: rgba(107,107,128,0.12); color: var(--muted); border: 1px solid var(--border); }
+  .badge-done     { background: rgba(74,222,128,0.1); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+  .badge-draft    { background: rgba(107,107,128,0.1); color: var(--muted); border: 1px solid var(--border); }
+  .badge-scheduled { background: rgba(96,165,250,0.1); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2); }
+
+  /* Progress */
+  .progress-section { padding: 0 28px 20px; }
+  .progress-stats { display: flex; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
+  .pstat { display: flex; flex-direction: column; }
+  .pstat .n { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; line-height: 1; }
+  .pstat .l { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
+  .n-sent { color: var(--accent); }
+  .n-bounced { color: #f97316; }
+  .n-failed { color: #ff6b6b; }
+  .n-pending { color: var(--muted); }
+  .n-total { color: var(--text); }
+  .progress-bar-wrap { height: 5px; background: var(--surface2); }
   .progress-bar-fill { height: 100%; background: var(--accent); transition: width 0.5s ease; }
-  .progress-pct { text-align: right; font-size: 12px; color: var(--muted); margin-top: 6px; }
-  .card-footer { border-top: 1px solid var(--border); padding: 12px 28px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); }
-  .detail-toggle { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 12px; font-family: 'DM Sans', sans-serif; }
-  .failures-panel { display: none; border-top: 1px solid var(--border); padding: 20px 28px; background: var(--surface2); }
-  .failures-panel.open { display: block; }
-  .failures-panel h4 { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .progress-pct { text-align: right; font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+  /* Card footer */
+  .card-footer { border-top: 1px solid var(--border); padding: 10px 28px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); }
+  .pacing-info { display: flex; gap: 16px; }
+
+  /* Expandable detail */
+  .detail-panel { display: none; border-top: 1px solid var(--border); }
+  .detail-panel.open { display: block; }
+  .detail-toolbar { padding: 16px 28px; display: flex; gap: 12px; align-items: center; background: var(--surface2); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .detail-toolbar input[type="text"], .detail-toolbar select {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none;
+  }
+  .detail-toolbar input:focus, .detail-toolbar select:focus { border-color: var(--accent); }
+  .detail-toolbar input[type="text"] { flex: 1; min-width: 180px; }
+
+  /* Queue table */
+  .queue-table-wrap { overflow-x: auto; max-height: 420px; overflow-y: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; padding: 8px 12px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
-  td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  thead th { position: sticky; top: 0; background: var(--surface); text-align: left; padding: 10px 16px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); z-index: 1; }
+  tbody td { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  /* Row status colors */
+  .row-sent    td:first-child { border-left: 2px solid var(--accent); }
+  .row-bounced td:first-child { border-left: 2px solid #f97316; }
+  .row-failed  td:first-child { border-left: 2px solid #ff6b6b; }
+  .row-skipped td:first-child { border-left: 2px solid var(--border); }
+  .row-pending td:first-child { border-left: 2px solid var(--surface2); }
+
+  .status-pill { display: inline-block; padding: 2px 9px; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; }
+  .pill-sent    { background: rgba(232,255,71,0.1); color: var(--accent); }
+  .pill-bounced { background: rgba(249,115,22,0.1); color: #f97316; }
+  .pill-failed  { background: rgba(255,107,107,0.1); color: #ff6b6b; }
+  .pill-pending { background: rgba(107,107,128,0.1); color: var(--muted); }
+  .pill-skipped { background: rgba(107,107,128,0.08); color: var(--muted); }
+
+  /* Pagination */
+  .pagination { display: flex; align-items: center; gap: 10px; padding: 14px 28px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
+  .page-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 5px 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 12px; }
+  .page-btn:hover { border-color: var(--accent); }
+  .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Live dot */
+  .live-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; display: inline-block; margin-right: 6px; animation: pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
   .empty-state { text-align: center; padding: 80px 20px; color: var(--muted); }
   .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 22px; margin-bottom: 8px; color: var(--text); }
-  .live-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; display: inline-block; margin-right: 6px; animation: pulse 1.5s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
   .toast { position: fixed; bottom: 32px; right: 32px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 16px 24px; font-size: 14px; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
   .toast.show { transform: translateY(0); opacity: 1; }
+  .error-cell { color: #ff6b6b; font-size: 11px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -87,62 +131,85 @@
   <div class="page-header">
     <h1>Campaign <span>Status</span></h1>
     <div style="display:flex;align-items:center;gap:16px">
-      <span style="font-size:13px;color:var(--muted)"><span class="live-dot"></span>Auto-refreshes every 10s</span>
+      <span style="font-size:13px;color:var(--muted)"><span class="live-dot"></span>Refreshes every 10s</span>
       <a href="/campaigns.html" class="btn btn-primary">+ New Campaign</a>
     </div>
   </div>
-
   <div id="campaigns-list"></div>
 </main>
-
 <div class="toast" id="toast"></div>
 
 <script>
-let openFailures = new Set();
+// State per campaign: open/closed, current page, filters
+const state = {};
 
-async function load() {
+function getState(id) {
+  if (!state[id]) state[id] = { open: false, page: 1, status: '', search: '' };
+  return state[id];
+}
+
+async function loadCampaigns() {
   const campaigns = await fetch('/api/campaigns').then(r => r.json());
   const container = document.getElementById('campaigns-list');
 
   if (!campaigns.length) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <h3>No campaigns yet</h3>
-        <p>Create your first campaign to start sending</p>
-      </div>`;
+    container.innerHTML = `<div class="empty-state"><h3>No campaigns yet</h3><p>Create your first campaign to start sending</p></div>`;
     return;
   }
 
-  container.innerHTML = campaigns.map(c => {
-    const pending = c.total - c.sent - c.failed;
-    const pct = c.total ? Math.round((c.sent + c.failed) / c.total * 100) : 0;
-    const isRunning = c.status === 'running';
-    const isDraft   = c.status === 'draft';
-    const isPaused  = c.status === 'paused';
-    const isDone    = c.status === 'done';
+  // Re-render cards (preserve open states)
+  for (const c of campaigns) {
+    const s = getState(c.id);
+    let el = document.getElementById(`card-${c.id}`);
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'campaign-card';
+      el.id = `card-${c.id}`;
+      container.appendChild(el);
+    }
 
-    return `
-    <div class="campaign-card" id="card-${c.id}">
-      <div class="card-header">
+    const pending = c.total - c.sent - c.failed;
+    const pct     = c.total ? Math.round((c.sent + c.failed) / c.total * 100) : 0;
+    const isRunning  = c.status === 'running';
+    const isDraft    = c.status === 'draft';
+    const isPaused   = c.status === 'paused';
+    const isDone     = c.status === 'done';
+
+    // Is it a future-scheduled draft?
+    const startDate = new Date(c.start_at);
+    const isScheduled = isDraft && startDate > new Date();
+
+    const batchInfo   = `${c.batch_size} emails every ${Math.round(c.interval_ms/60000)} min`;
+    const ratePerHour = Math.round((c.batch_size / c.interval_ms) * 3600000);
+
+    el.innerHTML = `
+      <div class="card-header" onclick="toggleDetail(${c.id})">
         <div class="card-left">
-          <div class="camp-title">${c.title}</div>
-          <div class="camp-subject">Subject: ${c.subject}</div>
+          <div class="camp-title">
+            ${c.title}
+            <span class="badge badge-${isScheduled ? 'scheduled' : c.status}">${isScheduled ? 'scheduled' : c.status}</span>
+          </div>
+          <div class="camp-meta">
+            Subject: ${c.subject}
+            ${isScheduled ? ` · <span style="color:#60a5fa">Starts ${startDate.toLocaleString()}</span>` : ''}
+          </div>
         </div>
         <div class="card-right">
-          <span class="status-badge badge-${c.status}">${c.status}</span>
-          ${isDraft   ? `<button class="btn btn-primary" onclick="startCampaign(${c.id})">Start</button>` : ''}
-          ${isPaused  ? `<button class="btn btn-primary" onclick="startCampaign(${c.id})">Resume</button>` : ''}
-          ${isRunning ? `<button class="btn btn-secondary" onclick="pauseCampaign(${c.id})">Pause</button>` : ''}
-          ${(isDone || isDraft || isPaused) ? `<button class="btn btn-danger" onclick="deleteCampaign(${c.id})">Delete</button>` : ''}
+          ${isDraft && !isScheduled ? `<button class="btn btn-primary" onclick="event.stopPropagation();startCampaign(${c.id})">Start</button>` : ''}
+          ${isPaused  ? `<button class="btn btn-primary" onclick="event.stopPropagation();startCampaign(${c.id})">Resume</button>` : ''}
+          ${isRunning ? `<button class="btn btn-secondary" onclick="event.stopPropagation();pauseCampaign(${c.id})">Pause</button>` : ''}
+          ${(isDone || isDraft || isPaused) ? `<button class="btn btn-danger" onclick="event.stopPropagation();deleteCampaign(${c.id})">Delete</button>` : ''}
+          <a href="/api/campaigns/${c.id}/export" class="btn btn-secondary" onclick="event.stopPropagation()">Export CSV</a>
+          <span class="chevron ${s.open ? 'open' : ''}">▼</span>
         </div>
       </div>
 
       <div class="progress-section">
         <div class="progress-stats">
-          <div class="prog-stat"><span class="c-sent">${c.sent.toLocaleString()}</span><span>Sent</span></div>
-          <div class="prog-stat"><span class="c-failed">${c.failed.toLocaleString()}</span><span>Failed</span></div>
-          <div class="prog-stat"><span class="c-pending">${pending.toLocaleString()}</span><span>Pending</span></div>
-          <div class="prog-stat"><span>${c.total.toLocaleString()}</span><span>Total</span></div>
+          <div class="pstat"><span class="n n-sent">${c.sent.toLocaleString()}</span><span class="l">Sent</span></div>
+          <div class="pstat"><span class="n n-bounced">${(c.failed).toLocaleString()}</span><span class="l">Failed/Bounced</span></div>
+          <div class="pstat"><span class="n n-pending">${Math.max(0,pending).toLocaleString()}</span><span class="l">Pending</span></div>
+          <div class="pstat"><span class="n n-total">${c.total.toLocaleString()}</span><span class="l">Total</span></div>
         </div>
         <div class="progress-bar-wrap">
           <div class="progress-bar-fill" style="width:${pct}%"></div>
@@ -151,67 +218,140 @@ async function load() {
       </div>
 
       <div class="card-footer">
-        <span>Created ${new Date(c.created_at).toLocaleString()}
-          ${c.started_at  ? ' · Started '  + new Date(c.started_at).toLocaleString()  : ''}
-          ${c.finished_at ? ' · Finished ' + new Date(c.finished_at).toLocaleString() : ''}
-          ${c.priority ? ' · ⚡ Priority order' : ''}
-        </span>
-        ${c.failed > 0 ? `<button class="detail-toggle" onclick="toggleFailures(${c.id})">
-          ${openFailures.has(c.id) ? 'Hide' : 'Show'} failures (${c.failed})
-        </button>` : '<span></span>'}
+        <div class="pacing-info">
+          <span>⚡ ${batchInfo} · ~${ratePerHour.toLocaleString()}/hr</span>
+          ${c.priority ? '<span>🕐 Priority order</span>' : ''}
+          ${c.started_at  ? `<span>Started ${new Date(c.started_at).toLocaleString()}</span>`  : ''}
+          ${c.finished_at ? `<span>Finished ${new Date(c.finished_at).toLocaleString()}</span>` : ''}
+        </div>
+        <button class="btn-ghost" onclick="toggleDetail(${c.id})">
+          ${s.open ? 'Hide details ▲' : 'Show recipients ▼'}
+        </button>
       </div>
 
-      <div class="failures-panel ${openFailures.has(c.id) ? 'open' : ''}" id="failures-${c.id}">
-        <h4>Failed deliveries</h4>
-        <div id="failures-content-${c.id}">Loading...</div>
+      <div class="detail-panel ${s.open ? 'open' : ''}" id="detail-${c.id}">
+        <div class="detail-toolbar">
+          <input type="text" placeholder="Search name or email..."
+            value="${s.search}"
+            oninput="updateFilter(${c.id},'search',this.value)">
+          <select onchange="updateFilter(${c.id},'status',this.value)">
+            <option value="" ${s.status===''?'selected':''}>All statuses</option>
+            <option value="pending"  ${s.status==='pending' ?'selected':''}>Pending</option>
+            <option value="sent"     ${s.status==='sent'    ?'selected':''}>Sent</option>
+            <option value="bounced"  ${s.status==='bounced' ?'selected':''}>Bounced</option>
+            <option value="failed"   ${s.status==='failed'  ?'selected':''}>Failed</option>
+            <option value="skipped"  ${s.status==='skipped' ?'selected':''}>Skipped</option>
+          </select>
+        </div>
+        <div class="queue-table-wrap" id="queue-table-${c.id}">
+          <div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">Loading...</div>
+        </div>
+        <div class="pagination" id="pagination-${c.id}"></div>
       </div>
-    </div>`;
-  }).join('');
+    `;
+
+    if (s.open) loadQueue(c.id);
+  }
+
+  // Remove cards for deleted campaigns
+  document.querySelectorAll('.campaign-card').forEach(el => {
+    const id = parseInt(el.id.replace('card-',''));
+    if (!campaigns.find(c => c.id === id)) el.remove();
+  });
 }
 
-async function toggleFailures(id) {
-  if (openFailures.has(id)) {
-    openFailures.delete(id);
-    document.getElementById(`failures-${id}`).classList.remove('open');
-  } else {
-    openFailures.add(id);
-    document.getElementById(`failures-${id}`).classList.add('open');
-    const data = await fetch(`/api/campaigns/${id}`).then(r => r.json());
-    const rows = data.failures;
-    document.getElementById(`failures-content-${id}`).innerHTML = rows.length
-      ? `<table>
-           <thead><tr><th>Name</th><th>Email</th><th>Error</th></tr></thead>
-           <tbody>${rows.map(r => `
-             <tr>
-               <td>${r.first_name || ''} ${r.last_name || ''}</td>
-               <td style="color:var(--muted)">${r.email}</td>
-               <td style="color:#ff6b6b;font-size:12px">${r.error || '—'}</td>
-             </tr>`).join('')}
-           </tbody>
-         </table>`
-      : '<p style="color:var(--muted);font-size:13px">No failures recorded.</p>';
+async function loadQueue(campaignId) {
+  const s = getState(campaignId);
+  const params = new URLSearchParams({
+    page: s.page, limit: 50,
+    status: s.status, search: s.search
+  });
+  const data = await fetch(`/api/campaigns/${campaignId}?${params}`).then(r => r.json());
+  const wrap = document.getElementById(`queue-table-${campaignId}`);
+  const pag  = document.getElementById(`pagination-${campaignId}`);
+  if (!wrap) return;
+
+  if (!data.queue.length) {
+    wrap.innerHTML = `<div style="padding:32px;text-align:center;color:var(--muted);font-size:13px">No recipients match this filter.</div>`;
+    pag.innerHTML = '';
+    return;
   }
-  load();
+
+  wrap.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Sent At</th>
+          <th>Bounced At</th>
+          <th>Error</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.queue.map(r => `
+          <tr class="row-${r.status}">
+            <td>${r.first_name||''} ${r.last_name||''}</td>
+            <td style="color:var(--muted)">${r.email||'—'}</td>
+            <td><span class="status-pill pill-${r.status}">${r.status}</span></td>
+            <td style="color:var(--muted);font-size:12px">${r.sent_at    ? new Date(r.sent_at).toLocaleString()    : '—'}</td>
+            <td style="color:#f97316;font-size:12px">    ${r.bounced_at ? new Date(r.bounced_at).toLocaleString() : '—'}</td>
+            <td><span class="error-cell" title="${r.error||''}">${r.error||'—'}</span></td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+
+  // Pagination
+  pag.innerHTML = `
+    <button class="page-btn" onclick="changePage(${campaignId},-1)" ${s.page<=1?'disabled':''}>← Prev</button>
+    <span>Page ${data.page} of ${data.pages} &nbsp;·&nbsp; ${data.total.toLocaleString()} recipients</span>
+    <button class="page-btn" onclick="changePage(${campaignId},1)" ${s.page>=data.pages?'disabled':''}>Next →</button>
+  `;
+}
+
+function toggleDetail(id) {
+  const s = getState(id);
+  s.open = !s.open;
+  const panel   = document.getElementById(`detail-${id}`);
+  const chevron = document.querySelector(`#card-${id} .chevron`);
+  if (panel)   panel.classList.toggle('open', s.open);
+  if (chevron) chevron.classList.toggle('open', s.open);
+  if (s.open)  loadQueue(id);
+}
+
+let filterTimers = {};
+function updateFilter(id, key, val) {
+  getState(id)[key] = val;
+  getState(id).page = 1;
+  clearTimeout(filterTimers[id]);
+  filterTimers[id] = setTimeout(() => loadQueue(id), 300);
+}
+
+function changePage(id, dir) {
+  const s = getState(id);
+  s.page += dir;
+  loadQueue(id);
 }
 
 async function startCampaign(id) {
   const r = await fetch(`/api/campaigns/${id}/start`, { method: 'PATCH' });
   const d = await r.json();
   if (!r.ok) return showToast(d.error || 'Error');
-  showToast('Campaign started'); load();
+  showToast('Campaign started'); loadCampaigns();
 }
 
 async function pauseCampaign(id) {
   const r = await fetch(`/api/campaigns/${id}/pause`, { method: 'PATCH' });
   const d = await r.json();
   if (!r.ok) return showToast(d.error || 'Error');
-  showToast('Campaign paused'); load();
+  showToast('Campaign paused'); loadCampaigns();
 }
 
 async function deleteCampaign(id) {
   if (!confirm('Delete this campaign?')) return;
   await fetch(`/api/campaigns/${id}`, { method: 'DELETE' });
-  showToast('Deleted'); load();
+  showToast('Deleted'); loadCampaigns();
 }
 
 function showToast(msg) {
@@ -225,8 +365,8 @@ async function logout() {
   window.location.href = '/login.html';
 }
 
-load();
-setInterval(load, 10000);
+loadCampaigns();
+setInterval(loadCampaigns, 10000);
 </script>
 </body>
 </html>

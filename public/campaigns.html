@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #0a0a0f; --surface: #111118; --surface2: #16161f;
-    --border: #1e1e2e; --accent: #e8ff47; --text: #f0f0f5; --muted: #6b6b80;
-  }
+  :root { --bg: #0a0a0f; --surface: #111118; --surface2: #16161f; --border: #1e1e2e; --accent: #e8ff47; --text: #f0f0f5; --muted: #6b6b80; }
   body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
   nav { display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 60px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
   .brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
@@ -18,43 +15,52 @@
   .nav-links { display: flex; gap: 32px; }
   .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
   .nav-links a.active { color: var(--text); border-bottom: 2px solid var(--accent); padding-bottom: 2px; }
-  .logout-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 7px 16px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; transition: all 0.2s; }
+  .logout-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 7px 16px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; }
   .logout-btn:hover { border-color: var(--muted); color: var(--text); }
   main { padding: 40px; max-width: 1400px; margin: 0 auto; }
   .page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 32px; }
   h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 36px; letter-spacing: -1px; }
   h1 span { color: var(--accent); }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-  .panel { background: var(--surface); border: 1px solid var(--border); padding: 32px; }
-  .panel-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-  .form-group { margin-bottom: 20px; }
-  label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-  input[type="text"], input[type="email"], select, textarea {
+  .grid { display: grid; grid-template-columns: 380px 1fr; gap: 32px; align-items: start; }
+  .panel { background: var(--surface); border: 1px solid var(--border); padding: 28px; }
+  .panel-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  .panel-title .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; display: inline-block; }
+  .form-group { margin-bottom: 18px; }
+  label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+  input[type="text"], input[type="number"], input[type="datetime-local"], select, textarea {
     width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text);
-    padding: 11px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px;
-    outline: none; transition: border-color 0.2s;
+    padding: 10px 13px; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s;
   }
   input:focus, select:focus, textarea:focus { border-color: var(--accent); }
   select option { background: var(--surface2); }
-  textarea.html-editor { font-family: 'Courier New', monospace; font-size: 13px; height: 320px; resize: vertical; }
-  .btn { padding: 11px 22px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; }
-  .btn-primary { background: var(--accent); color: #0a0a0f; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.5px; }
+  /* datetime-local color fix */
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator { filter: invert(0.7); cursor: pointer; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .textarea-code { font-family: 'Courier New', monospace; font-size: 12px; height: 380px; resize: vertical; line-height: 1.5; }
+  .btn { padding: 11px 20px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; white-space: nowrap; }
+  .btn-primary { background: var(--accent); color: #0a0a0f; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; }
   .btn-primary:hover { opacity: 0.85; }
-  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
   .btn-secondary:hover { border-color: var(--muted); }
-  .vars-hint { background: var(--surface2); border: 1px solid var(--border); padding: 14px 16px; margin-bottom: 20px; font-size: 12px; line-height: 1.8; }
-  .vars-hint strong { color: var(--accent); font-family: 'Courier New', monospace; }
-  .preview-frame { width: 100%; height: 320px; border: 1px solid var(--border); background: #fff; }
-  .toggle-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-  .toggle-row label { margin: 0; font-size: 13px; text-transform: none; letter-spacing: 0; color: var(--text); }
-  input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
-  .recipient-info { background: var(--surface2); border: 1px solid var(--border); padding: 16px; font-size: 13px; color: var(--muted); margin-top: 12px; }
-  .recipient-info strong { color: var(--accent); font-size: 20px; font-family: 'Syne', sans-serif; display: block; margin-bottom: 4px; }
-  .actions-row { display: flex; gap: 12px; margin-top: 28px; }
+  .actions-row { display: flex; gap: 10px; margin-top: 24px; }
+  .vars-hint { background: var(--surface2); border: 1px solid var(--border); padding: 12px 14px; margin-bottom: 16px; font-size: 12px; line-height: 2; }
+  .vars-hint code { background: rgba(232,255,71,0.1); color: var(--accent); padding: 1px 6px; font-family: 'Courier New', monospace; font-size: 11px; border: 1px solid rgba(232,255,71,0.2); margin: 2px; display: inline-block; }
+  .preview-wrap { margin-top: 0; }
+  .preview-frame { width: 100%; height: 500px; border: 1px solid var(--border); background: #fff; display: block; }
+  .recipient-box { background: var(--surface2); border: 1px solid var(--border); padding: 16px; display: flex; align-items: center; gap: 16px; margin-top: 12px; }
+  .recipient-box .num { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--accent); line-height: 1; }
+  .recipient-box .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
+  .schedule-row { display: flex; align-items: center; gap: 10px; }
+  .schedule-row input[type="datetime-local"] { flex: 1; }
+  .now-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 10px 14px; cursor: pointer; font-size: 12px; font-family: 'DM Sans', sans-serif; white-space: nowrap; transition: all 0.2s; }
+  .now-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .interval-custom { display: none; }
+  .interval-custom.show { display: block; margin-top: 8px; }
+  .section-label { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin: 22px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
   .toast { position: fixed; bottom: 32px; right: 32px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 16px 24px; font-size: 14px; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
   .toast.show { transform: translateY(0); opacity: 1; }
-  .full-col { grid-column: 1 / -1; }
+  .scheduled-badge { background: rgba(232,255,71,0.1); border: 1px solid rgba(232,255,71,0.3); color: var(--accent); font-size: 11px; padding: 3px 10px; font-family: 'DM Sans', sans-serif; }
 </style>
 </head>
 <body>
@@ -75,14 +81,14 @@
   </div>
 
   <div class="grid">
-    <!-- LEFT: Campaign settings -->
-    <div>
-      <div class="panel">
-        <div class="panel-title">Campaign Settings</div>
+    <!-- LEFT: Settings -->
+    <div style="display:flex;flex-direction:column;gap:24px">
 
+      <div class="panel">
+        <div class="panel-title"><span class="dot"></span> Campaign Info</div>
         <div class="form-group">
           <label>Campaign Title (internal)</label>
-          <input type="text" id="camp-title" placeholder="e.g. Summer Promo 2025">
+          <input type="text" id="camp-title" placeholder="e.g. Promo Aïd Mars 2025">
         </div>
         <div class="form-group">
           <label>Sender Name</label>
@@ -90,56 +96,101 @@
         </div>
         <div class="form-group">
           <label>Email Subject</label>
-          <input type="text" id="camp-subject" placeholder="e.g. Découvrez nos nouveaux événements !">
+          <input type="text" id="camp-subject" placeholder="e.g. 🎬 Invitation exclusive — La9cha Mel Sme">
         </div>
+      </div>
 
+      <div class="panel">
+        <div class="panel-title"><span class="dot"></span> Recipients</div>
         <div class="form-group">
-          <label>Recipients</label>
+          <label>Selection</label>
           <select id="recipient-mode" onchange="updateRecipientMode()">
             <option value="all">All clients with email</option>
             <option value="tag">Filter by tag</option>
           </select>
         </div>
-
         <div class="form-group" id="tag-group" style="display:none">
           <label>Tag</label>
           <select id="recipient-tag" onchange="updateCount()">
             <option value="">Select tag...</option>
           </select>
         </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="priority-check" style="width:16px;height:16px;accent-color:var(--accent)">
+            Prioritize most recently active first
+          </label>
+        </div>
+        <div class="recipient-box">
+          <div>
+            <div class="num" id="recipient-count">—</div>
+            <div class="lbl">Recipients</div>
+          </div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.6">
+            Only clients with<br>a valid email address
+          </div>
+        </div>
+      </div>
 
-        <div class="recipient-info" id="recipient-info">
-          <strong id="recipient-count">—</strong>
-          recipients will receive this campaign
+      <div class="panel">
+        <div class="panel-title"><span class="dot"></span> Scheduling &amp; Pacing</div>
+
+        <div class="form-group">
+          <label>Start Date &amp; Time</label>
+          <div class="schedule-row">
+            <input type="datetime-local" id="start-at">
+            <button class="now-btn" onclick="setNow()">Now</button>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px">
+            Leave as-is or set a future date — campaign starts automatically
+          </div>
         </div>
 
-        <div class="toggle-row" style="margin-top:20px">
-          <input type="checkbox" id="priority-check">
-          <label for="priority-check">Prioritize most recently active clients first</label>
+        <div class="two-col">
+          <div class="form-group">
+            <label>Batch Size</label>
+            <input type="number" id="batch-size" value="40" min="1" max="500">
+          </div>
+          <div class="form-group">
+            <label>Interval</label>
+            <select id="interval-preset" onchange="updateIntervalCustom()">
+              <option value="300000">5 minutes</option>
+              <option value="480000" selected>8 minutes</option>
+              <option value="900000">15 minutes</option>
+              <option value="1800000">30 minutes</option>
+              <option value="3600000">1 hour</option>
+              <option value="custom">Custom...</option>
+            </select>
+            <div class="interval-custom" id="interval-custom">
+              <input type="number" id="interval-custom-val" placeholder="Minutes" min="1">
+            </div>
+          </div>
+        </div>
+
+        <div id="rate-estimate" style="background:var(--surface2);border:1px solid var(--border);padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.8;">
         </div>
 
         <div class="actions-row">
           <button class="btn btn-secondary" onclick="saveDraft()">Save as Draft</button>
-          <button class="btn btn-primary" onclick="createAndStart()">Create & Start</button>
+          <button class="btn btn-primary" onclick="createAndStart()">
+            <span id="start-btn-label">Create &amp; Start</span>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- RIGHT: HTML Editor + Preview -->
+    <!-- RIGHT: Editor + Preview -->
     <div style="display:flex;flex-direction:column;gap:24px">
       <div class="panel">
-        <div class="panel-title">HTML Body</div>
+        <div class="panel-title"><span class="dot"></span> HTML Body</div>
         <div class="vars-hint">
-          Available variables: <strong>{{first_name}}</strong> <strong>{{last_name}}</strong>
-          <strong>{{email}}</strong> <strong>{{city}}</strong> <strong>{{state}}</strong>
-          <strong>{{country}}</strong> <strong>{{postcode}}</strong>
+          Variables: <code>{{first_name}}</code><code>{{last_name}}</code><code>{{email}}</code><code>{{city}}</code><code>{{state}}</code><code>{{country}}</code><code>{{postcode}}</code>
         </div>
-        <textarea class="html-editor" id="html-body" oninput="updatePreview()" placeholder="<p>Bonjour {{first_name}},</p>
-<p>Votre message ici...</p>"></textarea>
+        <textarea class="textarea-code" id="html-body" oninput="updatePreview()" placeholder="<p>Bonjour {{first_name}},</p>&#10;<p>Votre message ici...</p>"></textarea>
       </div>
 
-      <div class="panel">
-        <div class="panel-title">Preview</div>
+      <div class="panel preview-wrap">
+        <div class="panel-title"><span class="dot"></span> Live Preview</div>
         <iframe class="preview-frame" id="preview-frame"></iframe>
       </div>
     </div>
@@ -151,12 +202,64 @@
 <script>
 let categories = [];
 
+function toLocalDatetimeValue(d) {
+  const pad = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function setNow() {
+  document.getElementById('start-at').value = toLocalDatetimeValue(new Date());
+  updateStartBtnLabel();
+}
+
+function updateStartBtnLabel() {
+  const val = document.getElementById('start-at').value;
+  const label = document.getElementById('start-btn-label');
+  if (!val) { label.textContent = 'Create & Start'; return; }
+  const chosen = new Date(val);
+  if (chosen <= new Date()) {
+    label.textContent = 'Create & Start Now';
+  } else {
+    label.textContent = `Schedule for ${chosen.toLocaleString('fr-CA',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}`;
+  }
+}
+
+function updateIntervalCustom() {
+  const val = document.getElementById('interval-preset').value;
+  document.getElementById('interval-custom').className =
+    val === 'custom' ? 'interval-custom show' : 'interval-custom';
+  updateRateEstimate();
+}
+
+function getIntervalMs() {
+  const preset = document.getElementById('interval-preset').value;
+  if (preset === 'custom') {
+    const mins = parseInt(document.getElementById('interval-custom-val').value || '8');
+    return mins * 60 * 1000;
+  }
+  return parseInt(preset);
+}
+
+function updateRateEstimate() {
+  const batch    = parseInt(document.getElementById('batch-size').value || '40');
+  const interval = getIntervalMs();
+  const perHour  = Math.round((batch / interval) * 3600000);
+  const el = document.getElementById('rate-estimate');
+  el.innerHTML = `
+    <strong style="color:var(--text)">${batch}</strong> emails every
+    <strong style="color:var(--text)">${Math.round(interval/60000)} min</strong>
+    → approx <strong style="color:var(--accent)">${perHour.toLocaleString()} emails/hour</strong>
+  `;
+}
+
 async function load() {
   categories = await fetch('/api/clients/categories').then(r => r.json());
   const sel = document.getElementById('recipient-tag');
   sel.innerHTML = '<option value="">Select tag...</option>' +
     categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+  setNow();
   updateCount();
+  updateRateEstimate();
 }
 
 function updateRecipientMode() {
@@ -166,68 +269,70 @@ function updateRecipientMode() {
 }
 
 async function updateCount() {
-  const mode = document.getElementById('recipient-mode').value;
-  const tag  = document.getElementById('recipient-tag').value;
-  let url = '/api/clients';
-  const clients = await fetch(url).then(r => r.json());
-
-  let count;
-  if (mode === 'all') {
-    count = clients.filter(c => c.email).length;
-  } else {
-    count = clients.filter(c => c.email && (c.categories || []).includes(tag)).length;
-  }
+  const mode    = document.getElementById('recipient-mode').value;
+  const tag     = document.getElementById('recipient-tag').value;
+  const clients = await fetch('/api/clients').then(r => r.json());
+  const count   = mode === 'tag'
+    ? clients.filter(c => c.email && (c.categories||[]).includes(tag)).length
+    : clients.filter(c => c.email).length;
   document.getElementById('recipient-count').textContent = count.toLocaleString();
 }
 
 function updatePreview() {
   const html = document.getElementById('html-body').value;
-  const doc = document.getElementById('preview-frame').contentDocument;
+  const doc  = document.getElementById('preview-frame').contentDocument;
   doc.open(); doc.write(html); doc.close();
 }
 
 async function createCampaign(startAfter) {
-  const title    = document.getElementById('camp-title').value.trim();
-  const subject  = document.getElementById('camp-subject').value.trim();
-  const sender   = document.getElementById('sender-name').value.trim();
-  const html     = document.getElementById('html-body').value.trim();
-  const priority = document.getElementById('priority-check').checked;
-  const mode     = document.getElementById('recipient-mode').value;
-  const tag      = document.getElementById('recipient-tag').value;
+  const title   = document.getElementById('camp-title').value.trim();
+  const subject = document.getElementById('camp-subject').value.trim();
+  const sender  = document.getElementById('sender-name').value.trim();
+  const html    = document.getElementById('html-body').value.trim();
+  const priority= document.getElementById('priority-check').checked;
+  const mode    = document.getElementById('recipient-mode').value;
+  const tag     = document.getElementById('recipient-tag').value;
+  const batch   = parseInt(document.getElementById('batch-size').value || '40');
+  const interval= getIntervalMs();
+  const startVal= document.getElementById('start-at').value;
+  const start_at= startVal ? new Date(startVal).toISOString() : new Date().toISOString();
 
   if (!title)   return showToast('Campaign title is required');
   if (!subject) return showToast('Subject is required');
   if (!html)    return showToast('HTML body is required');
 
   const body = {
-    title, subject,
-    sender_name: sender,
-    html_body: html,
-    priority,
-    recipient_mode: mode,
-    tag: mode === 'tag' ? tag : undefined
+    title, subject, sender_name: sender, html_body: html,
+    priority, recipient_mode: mode,
+    tag: mode === 'tag' ? tag : undefined,
+    batch_size: batch, interval_ms: interval, start_at
   };
 
-  const res = await fetch('/api/campaigns', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+  const res  = await fetch('/api/campaigns', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
   const data = await res.json();
   if (!res.ok) return showToast(data.error || 'Error creating campaign');
 
-  if (startAfter) {
+  // If start_at is now or past, start it immediately
+  const startDate = new Date(start_at);
+  const isNowOrPast = startDate <= new Date(Date.now() + 5000);
+
+  if (startAfter && isNowOrPast) {
     await fetch(`/api/campaigns/${data.id}/start`, { method: 'PATCH' });
-    showToast('Campaign started! Redirecting...');
+    showToast('Campaign started!');
+  } else if (startAfter) {
+    showToast(`Campaign scheduled for ${startDate.toLocaleString()}`);
   } else {
     showToast('Draft saved!');
   }
 
-  setTimeout(() => window.location.href = '/campaign-status.html', 1200);
+  setTimeout(() => window.location.href = '/campaign-status.html', 1300);
 }
 
-function saveDraft()       { createCampaign(false); }
-function createAndStart()  { createCampaign(true);  }
+function saveDraft()      { createCampaign(false); }
+function createAndStart() { createCampaign(true);  }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -239,6 +344,9 @@ async function logout() {
   await fetch('/api/auth/logout', { method: 'POST' });
   window.location.href = '/login.html';
 }
+
+document.getElementById('batch-size').addEventListener('input', updateRateEstimate);
+document.getElementById('start-at').addEventListener('change', updateStartBtnLabel);
 
 load();
 </script>
